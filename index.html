@@ -1,29 +1,707 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>AI Foundations Training</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Foundations Training — Cenetta by Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --emerald-deep: #0a2e1a;
+    --emerald: #0d3d22;
+    --emerald-mid: #145c33;
+    --emerald-light: #1a7a43;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-bright: #f5d87a;
+    --gold-dim: #8a6f2e;
+    --cream: #fdf8ee;
+    --text-light: #f0e8d0;
+    --text-muted: #9db89e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--emerald-deep);
+    color: var(--text-light);
+    overflow-x: hidden;
+  }
+
+  #particles {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 48px;
+    background: linear-gradient(to bottom, rgba(10,46,26,0.97), transparent);
+    backdrop-filter: blur(4px);
+  }
+  .nav-brand {
+    font-family: 'Cinzel', serif;
+    font-size: 13px; letter-spacing: 3px;
+    color: var(--gold); text-transform: uppercase;
+  }
+  .nav-cta {
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 2px; text-transform: uppercase;
+    background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+    color: var(--emerald-deep); padding: 10px 24px;
+    border: none; cursor: pointer; font-weight: 700;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(201,168,76,0.4); }
+
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 120px 24px 80px;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(21,92,51,0.5) 0%, transparent 70%),
+      linear-gradient(170deg, #0a2e1a 0%, #061a0f 60%, #030e08 100%);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M30 0 L32 28 L60 30 L32 32 L30 60 L28 32 L0 30 L28 28 Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 5px; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(42px, 8vw, 88px);
+    font-weight: 700; line-height: 1.05;
+    color: var(--cream);
+    text-shadow: 0 0 60px rgba(201,168,76,0.3);
+    margin-bottom: 16px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+  .hero-title span { color: var(--gold-bright); }
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3.5vw, 30px);
+    font-style: italic; color: var(--text-muted);
+    margin-bottom: 48px; max-width: 620px;
+    opacity: 0; animation: fadeUp 1s ease 0.6s forwards;
+  }
+  .hero-date-bar {
+    display: flex; gap: 32px; align-items: center; justify-content: center;
+    flex-wrap: wrap;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 16px 40px; margin-bottom: 52px;
+    opacity: 0; animation: fadeUp 1s ease 0.8s forwards;
+  }
+  .hero-date-item {
+    font-family: 'Cinzel', serif; font-size: 13px;
+    letter-spacing: 2px; color: var(--gold-light);
+    display: flex; gap: 8px; align-items: center;
+  }
+  .hero-date-item .dot { color: var(--gold-dim); }
+  .hero-btns {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    opacity: 0; animation: fadeUp 1s ease 1s forwards;
+  }
+  .btn-primary {
+    font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold), var(--gold-bright), var(--gold));
+    background-size: 200% 200%; animation: shimmer 3s ease infinite;
+    color: var(--emerald-deep); padding: 18px 44px;
+    border: none; cursor: pointer; text-decoration: none;
+    display: inline-block;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(201,168,76,0.5); }
+  .btn-secondary {
+    font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 3px; text-transform: uppercase;
+    background: transparent; color: var(--gold-light);
+    padding: 17px 44px; cursor: pointer; text-decoration: none;
+    display: inline-block;
+    border: 1px solid rgba(201,168,76,0.5);
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+
+  .gold-divider {
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 48px; margin: 0 auto; max-width: 700px;
+  }
+  .gold-divider::before, .gold-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+  }
+  .gold-divider .diamond {
+    width: 8px; height: 8px;
+    background: var(--gold); transform: rotate(45deg);
+  }
+
+  section { position: relative; z-index: 1; }
+
+  .section-label {
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 5px; color: var(--gold);
+    text-transform: uppercase; text-align: center;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700; text-align: center;
+    color: var(--cream); margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .section-title span { color: var(--gold-bright); }
+  .section-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-style: italic;
+    color: var(--text-muted); text-align: center;
+    max-width: 560px; margin: 0 auto 56px;
+    line-height: 1.6;
+  }
+
+  .about { padding: 100px 24px; }
+  .about-inner {
+    max-width: 860px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .about-text h2 {
+    font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700;
+    color: var(--cream); margin-bottom: 20px; line-height: 1.2;
+  }
+  .about-text h2 em { color: var(--gold-bright); font-style: normal; }
+  .about-text p {
+    font-size: 16px; line-height: 1.85;
+    color: var(--text-muted); margin-bottom: 16px;
+  }
+  .about-stats { display: flex; flex-direction: column; gap: 24px; }
+  .stat-card {
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 24px 28px;
+    border-left: 3px solid var(--gold);
+  }
+  .stat-card .num {
+    font-family: 'Cinzel', serif; font-size: 36px;
+    font-weight: 700; color: var(--gold-bright);
+  }
+  .stat-card .label {
+    font-size: 13px; color: var(--text-muted);
+    letter-spacing: 1px; margin-top: 4px;
+  }
+
+  .learn { padding: 80px 24px; background: rgba(13,61,34,0.3); }
+  .learn-grid {
+    max-width: 1000px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+  }
+  .learn-card {
+    background: linear-gradient(145deg, rgba(20,92,51,0.25), rgba(10,46,26,0.4));
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 36px 28px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .learn-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0); transition: transform 0.4s;
+  }
+  .learn-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.5); }
+  .learn-card:hover::before { transform: scaleX(1); }
+  .learn-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+  .learn-card h3 {
+    font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600;
+    color: var(--gold-light); margin-bottom: 10px; letter-spacing: 1px;
+  }
+  .learn-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  .pricing { padding: 100px 24px; }
+  .pricing-grid {
+    max-width: 860px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;
+  }
+  .price-card {
+    background: linear-gradient(160deg, rgba(20,92,51,0.3), rgba(10,46,26,0.6));
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 44px 36px; position: relative; overflow: hidden;
+    transition: transform 0.3s;
+  }
+  .price-card:hover { transform: translateY(-6px); }
+  .price-card.vip {
+    border-color: var(--gold);
+    background: linear-gradient(160deg, rgba(30,100,60,0.35), rgba(13,61,34,0.7));
+    box-shadow: 0 0 60px rgba(201,168,76,0.15), inset 0 0 40px rgba(201,168,76,0.03);
+  }
+  .most-popular-badge {
+    position: absolute; top: 0; right: 0;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold-bright));
+    color: var(--emerald-deep); font-family: 'Cinzel', serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    padding: 8px 20px; text-transform: uppercase;
+  }
+  .price-tier {
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px;
+  }
+  .price-amount {
+    font-family: 'Cinzel', serif;
+    font-size: 64px; font-weight: 700;
+    color: var(--gold-bright); line-height: 1;
+    margin-bottom: 8px;
+  }
+  .price-amount sup { font-size: 28px; vertical-align: super; }
+  .price-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-style: italic; color: var(--text-muted);
+    margin-bottom: 32px; line-height: 1.5;
+  }
+  .price-features { list-style: none; margin-bottom: 40px; }
+  .price-features li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 0; border-bottom: 1px solid rgba(201,168,76,0.1);
+    font-size: 14px; color: var(--text-light); line-height: 1.5;
+  }
+  .price-features li:last-child { border-bottom: none; }
+  .price-features .check { color: var(--gold); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .btn-price {
+    display: block; text-align: center; text-decoration: none;
+    font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase; padding: 16px;
+    transition: all 0.2s;
+  }
+  .btn-price.general {
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+  .btn-price.general:hover { background: rgba(201,168,76,0.12); }
+  .btn-price.vip-btn {
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold), var(--gold-bright));
+    background-size: 200% 200%; animation: shimmer 3s ease infinite;
+    color: var(--emerald-deep);
+    box-shadow: 0 6px 28px rgba(201,168,76,0.4);
+  }
+  .btn-price.vip-btn:hover { box-shadow: 0 10px 40px rgba(201,168,76,0.6); transform: scale(1.02); }
+
+  .testimonials { padding: 80px 24px; background: rgba(6,26,15,0.5); }
+  .testimonials-grid {
+    max-width: 1000px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px;
+  }
+  .testimonial-card {
+    background: rgba(20,92,51,0.15);
+    border: 1px solid rgba(201,168,76,0.15);
+    padding: 36px 32px; position: relative;
+  }
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px; line-height: 0.5;
+    color: var(--gold-dim); opacity: 0.6;
+    margin-bottom: 16px; display: block;
+  }
+  .testimonial-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-style: italic;
+    color: var(--text-light); line-height: 1.75;
+    margin-bottom: 24px;
+  }
+  .testimonial-author {
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 2px; color: var(--gold); text-transform: uppercase;
+  }
+  .stars { color: var(--gold-bright); font-size: 14px; margin-bottom: 16px; }
+
+  .host { padding: 80px 24px; }
+  .host-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+  .host-avatar {
+    width: 100px; height: 100px; margin: 0 auto 24px;
+    border-radius: 50%; background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    box-shadow: 0 0 40px rgba(201,168,76,0.3);
+    border: 2px solid var(--gold);
+  }
+  .host-name {
+    font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700;
+    color: var(--cream); margin-bottom: 4px;
+  }
+  .host-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 18px;
+    font-style: italic; color: var(--gold-light); margin-bottom: 24px;
+  }
+  .host-bio {
+    font-size: 15px; color: var(--text-muted); line-height: 1.85; max-width: 560px; margin: 0 auto;
+  }
+
+  .faq { padding: 80px 24px; background: rgba(13,61,34,0.2); }
+  .faq-list { max-width: 700px; margin: 0 auto; }
+  .faq-item { border-bottom: 1px solid rgba(201,168,76,0.15); }
+  .faq-q {
+    width: 100%; background: none; border: none; color: var(--cream);
+    font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600;
+    letter-spacing: 0.5px; text-align: left;
+    padding: 22px 0; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  .faq-q:hover { color: var(--gold-light); }
+  .faq-icon { color: var(--gold); font-size: 20px; flex-shrink: 0; transition: transform 0.3s; }
+  .faq-a {
+    font-size: 14px; color: var(--text-muted); line-height: 1.8;
+    max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s;
+    padding-bottom: 0;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+  .final-cta {
+    padding: 100px 24px; text-align: center;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 50%, rgba(21,92,51,0.4) 0%, transparent 70%),
+      var(--emerald-deep);
+  }
+  .final-cta .cta-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(32px, 6vw, 58px);
+    font-weight: 700; color: var(--cream);
+    margin-bottom: 20px; line-height: 1.1;
+  }
+  .final-cta .cta-title span { color: var(--gold-bright); }
+  .final-cta .cta-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-style: italic;
+    color: var(--text-muted); margin-bottom: 48px;
+  }
+
+  footer {
+    background: #040f08; padding: 48px 24px 32px;
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+  .footer-brand {
+    font-family: 'Cinzel', serif; font-size: 18px;
+    color: var(--gold); letter-spacing: 3px; margin-bottom: 8px;
+  }
+  .footer-tagline {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 15px; color: var(--text-muted); margin-bottom: 28px;
+  }
+  .footer-links {
+    display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .footer-links a {
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px;
+    color: var(--gold-dim); text-decoration: none; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy { font-size: 12px; color: rgba(157,184,158,0.4); letter-spacing: 1px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 700px) {
+    nav { padding: 16px 20px; }
+    .about-inner, .pricing-grid { grid-template-columns: 1fr; gap: 32px; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .hero-date-bar { gap: 16px; padding: 14px 20px; }
+  }
+</style>
 </head>
+<body>
 
-<body style="background-color:#0f172a; color:white; text-align:center; padding:50px; font-family:Arial;">
+<canvas id="particles"></canvas>
 
-  <h1>AI Foundations Training</h1>
-  <p>Learn how to use AI tools to save time, grow your business, and work smarter.</p>
+<nav>
+  <div class="nav-brand">Cenetta by Design</div>
+  <a href="#pricing" class="nav-cta">Register Now</a>
+</nav>
 
-  <br><br>
+<section class="hero">
+  <p class="hero-eyebrow">Cenetta by Design Presents</p>
+  <h1 class="hero-title">AI Foundations<br><span>Training</span></h1>
+  <p class="hero-subtitle">Learn to Use AI & ChatGPT Like a Pro — Even as a Beginner</p>
+  <div class="hero-date-bar">
+    <div class="hero-date-item">📅 <span>May 16, 2025</span></div>
+    <div class="hero-date-item dot">◆</div>
+    <div class="hero-date-item">🕓 <span>4:00 PM</span></div>
+    <div class="hero-date-item dot">◆</div>
+    <div class="hero-date-item">💻 <span>Online — Live</span></div>
+    <div class="hero-date-item dot">◆</div>
+    <div class="hero-date-item">🎟 <span>Starting at $25</span></div>
+  </div>
+  <div class="hero-btns">
+    <a href="#pricing" class="btn-primary">Secure Your Seat</a>
+    <a href="#learn" class="btn-secondary">See What's Included</a>
+  </div>
+</section>
 
-  <a href="https://square.link/u/5mBwkdFm">
-    <button style="padding:15px 25px; font-size:18px;">General Access - $25</button>
-  </a>
+<section class="about reveal" id="about">
+  <div class="about-inner">
+    <div class="about-text">
+      <h2>AI is the <em>most powerful tool</em> of our generation — and it's for everyone.</h2>
+      <p>Whether you're an educator, entrepreneur, or total beginner, AI Foundations Training will give you the clarity, confidence, and hands-on skills to start using ChatGPT and AI tools in your everyday life and work.</p>
+      <p>No jargon. No prior experience needed. Just step-by-step, practical instruction designed to meet you where you are.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card">
+        <div class="num">100%</div>
+        <div class="label">Beginner Friendly — No Experience Required</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">LIVE</div>
+        <div class="label">Real-Time Training with Q&A</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">✦</div>
+        <div class="label">Certificate of Completion Included</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <br><br>
+<section class="learn reveal" id="learn">
+  <div class="section-label">Curriculum</div>
+  <h2 class="section-title">What You'll <span>Learn</span></h2>
+  <p class="section-sub">A comprehensive, beginner-friendly curriculum designed to get you using AI with confidence.</p>
+  <div class="learn-grid">
+    <div class="learn-card">
+      <span class="learn-icon">🤖</span>
+      <h3>What Is AI & ChatGPT?</h3>
+      <p>Demystify artificial intelligence and understand how ChatGPT works — in plain, simple language anyone can grasp.</p>
+    </div>
+    <div class="learn-card">
+      <span class="learn-icon">✍️</span>
+      <h3>Prompt Writing Mastery</h3>
+      <p>Learn how to write clear, effective prompts that get you exactly the results you need — every time.</p>
+    </div>
+    <div class="learn-card">
+      <span class="learn-icon">⚡</span>
+      <h3>AI Tools for Productivity</h3>
+      <p>Discover the top AI tools for content creation, planning, email writing, research, and more.</p>
+    </div>
+    <div class="learn-card">
+      <span class="learn-icon">🏫</span>
+      <h3>AI for Educators</h3>
+      <p>Special focus on how teachers, coaches, and trainers can use AI to save time and elevate their work.</p>
+    </div>
+    <div class="learn-card">
+      <span class="learn-icon">💼</span>
+      <h3>AI for Business & Content</h3>
+      <p>Use ChatGPT to create social posts, marketing copy, digital products, and business documents faster.</p>
+    </div>
+    <div class="learn-card">
+      <span class="learn-icon">🛡️</span>
+      <h3>AI Ethics & Smart Usage</h3>
+      <p>Understand the boundaries of AI — what to trust, what to verify, and how to use it responsibly.</p>
+    </div>
+  </div>
+</section>
 
-  <a href="https://square.link/u/RChCw8yf">
-    <button style="padding:15px 25px; font-size:18px;">VIP Access - $55</button>
-  </a>
+<section class="pricing reveal" id="pricing">
+  <div class="section-label">Choose Your Experience</div>
+  <h2 class="section-title">Select Your <span>Access Level</span></h2>
+  <p class="section-sub">Both options include live training. Upgrade to VIP for the full, immersive experience.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier">General Access</div>
+      <div class="price-amount"><sup>$</sup>25<span style="font-size:22px;color:var(--gold-dim)">.00 USD</span></div>
+      <p class="price-desc">Join the live session and learn in real-time with everything you need to get started.</p>
+      <ul class="price-features">
+        <li><span class="check">✦</span> <span><strong>Live Training Session</strong> — Join in real-time and learn step-by-step</span></li>
+        <li><span class="check">✦</span> <span><strong>Beginner-Friendly Instruction</strong> — No experience needed, zero jargon</span></li>
+        <li><span class="check">✦</span> <span><strong>Certificate of Completion</strong> — Earn your certificate when you finish</span></li>
+      </ul>
+      <a href="https://square.link/u/5mBwkdFm" class="btn-price general" target="_blank" rel="noopener">Enroll — General Access</a>
+    </div>
+    <div class="price-card vip">
+      <div class="most-popular-badge">⭐ Most Popular</div>
+      <div class="price-tier" style="color:var(--gold-bright)">VIP Access</div>
+      <div class="price-amount"><sup>$</sup>55<span style="font-size:22px;color:var(--gold-dim)">.00 USD</span></div>
+      <p class="price-desc">Get the FULL experience — everything in General plus exclusive bonuses built to unlock your potential.</p>
+      <ul class="price-features">
+        <li><span class="check">✦</span> <span><strong>Everything in General Access</strong> — All features included</span></li>
+        <li><span class="check">✦</span> <span><strong>VIP Workbook & Prompt Guide</strong> — Exclusive workbook + powerful AI prompts</span></li>
+        <li><span class="check">✦</span> <span><strong>Certificate of Completion</strong> — Earn your personalized certificate</span></li>
+        <li><span class="check">✦</span> <span><strong>Replay Access</strong> — Watch the full training anytime, at your own pace</span></li>
+      </ul>
+      <a href="https://square.link/u/RChCw8yf" class="btn-price vip-btn" target="_blank" rel="noopener">Enroll — VIP Access</a>
+      <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:14px;font-style:italic;">*Most attendees choose VIP for the full experience</p>
+    </div>
+  </div>
+</section>
 
-  <br><br>
+<section class="testimonials reveal" id="testimonials">
+  <div class="section-label">What Others Are Saying</div>
+  <h2 class="section-title">Student <span>Testimonials</span></h2>
+  <p class="section-sub">Hear from people who've already transformed the way they work with AI.</p>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">Cenetta has a gift for making complex technology feel simple and accessible. I walked away knowing exactly how to use ChatGPT in my classroom. Game-changing!</p>
+      <div class="testimonial-author">— Tamara J., Educator</div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">I was so intimidated by AI before this training. Now I use it every single day for my business. The VIP workbook alone was worth every penny.</p>
+      <div class="testimonial-author">— Monique R., Entrepreneur</div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">The instruction was clear, practical, and energizing. Cenetta doesn't just teach — she empowers. I left the training ready to take action immediately.</p>
+      <div class="testimonial-author">— Diane S., Content Creator</div>
+    </div>
+  </div>
+</section>
 
-  <p>Inbox to schedule 1-on-1 training ($130)</p>
+<section class="host reveal">
+  <div class="host-inner">
+    <div class="section-label">Your Instructor</div>
+    <div class="host-avatar">👩🏾‍💻</div>
+    <div class="host-name">Cenetta Twyman</div>
+    <div class="host-title">AI Educator & Trainer · Founder, Cenetta by Design</div>
+    <p class="host-bio">Cenetta Twyman is a dedicated AI educator, digital product creator, and founder of Cenetta by Design. With a passion for making technology approachable, she has helped educators, entrepreneurs, and beginners unlock the power of AI tools to transform their work and lives. Her training style is warm, practical, and results-driven — designed so that every student leaves empowered.</p>
+  </div>
+</section>
 
+<section class="faq reveal">
+  <div class="section-label">Got Questions?</div>
+  <h2 class="section-title">Frequently Asked <span>Questions</span></h2>
+  <p class="section-sub" style="margin-bottom:40px;">Everything you need to know before you enroll.</p>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q">Do I need prior experience with AI or ChatGPT? <span class="faq-icon">+</span></button>
+      <div class="faq-a">Absolutely not! This training is designed from the ground up for beginners. If you can use a smartphone or email, you have everything you need to get started.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">What do I need to attend the live session? <span class="faq-icon">+</span></button>
+      <div class="faq-a">Just a device with internet access — a laptop, tablet, or phone all work. A link to join the live session will be sent to you after registration.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">What's the difference between General and VIP Access? <span class="faq-icon">+</span></button>
+      <div class="faq-a">General Access includes the live training session and a certificate of completion. VIP Access adds an exclusive workbook & prompt guide, personalized certificate, and full replay access so you can revisit the training anytime.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">When will I receive my materials after purchasing? <span class="faq-icon">+</span></button>
+      <div class="faq-a">You'll receive a confirmation email immediately after purchase with all the details you need. VIP materials will be delivered before the training date.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">Can I get a refund if I can't attend? <span class="faq-icon">+</span></button>
+      <div class="faq-a">Please reach out to cenetta@cenettabydesign.com with any questions about your registration. VIP members can still access the replay if they miss the live session.</div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta reveal">
+  <div class="gold-divider" style="margin-bottom:60px;"><div class="diamond"></div></div>
+  <div class="section-label">Don't Miss Your Seat</div>
+  <h2 class="cta-title">Ready to Master <span>AI</span>?</h2>
+  <p class="cta-sub">Join us live on May 16th and step into the future — confidently.</p>
+  <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+    <a href="https://square.link/u/5mBwkdFm" class="btn-primary" target="_blank" rel="noopener">General Access — $25</a>
+    <a href="https://square.link/u/RChCw8yf" class="btn-primary" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#8a6f2e,#c9a84c,#f5d87a,#c9a84c)">VIP Access — $55 ⭐</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Cenetta by Design</div>
+  <div class="footer-tagline">Empowering you to create, learn & lead by design.</div>
+  <div class="footer-links">
+    <a href="mailto:cenetta@cenettabydesign.com">✉ cenetta@cenettabydesign.com</a>
+    <a href="https://www.facebook.com/CenettaByDesign" target="_blank" rel="noopener">Facebook: Cenetta By Design</a>
+    <a href="#pricing">Register Now</a>
+  </div>
+  <div class="footer-copy">© 2025 Cenetta by Design · All Rights Reserved</div>
+</footer>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.5 + 0.3,
+    dx: (Math.random() - 0.5) * 0.3,
+    dy: -Math.random() * 0.4 - 0.1,
+    o: Math.random() * 0.5 + 0.1,
+    color: Math.random() > 0.5 ? '#c9a84c' : '#e8c96a'
+  });
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.o;
+    ctx.fill();
+    p.x += p.dx; p.y += p.dy;
+    if (p.y < -10) { p.y = window.innerHeight + 10; p.x = Math.random() * window.innerWidth; }
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+reveals.forEach(r => observer.observe(r));
+
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+</script>
 </body>
 </html>
+ 
